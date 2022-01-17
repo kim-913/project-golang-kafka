@@ -1,6 +1,34 @@
 # tigergraph-project
 
-## Divided the whole pipline into four parts.
+#### User Guide
+
+### Before using this project, you need to install Python, Golan, Java, and Kafka to your local computer. Specific instruction please follow google.
+
+**Step1**, you need to downloa mysql and create schema called project-tigergraph and create a table called project
+```
+CREATE TABLE `project`
+(`id` INTEGER DEFAULT NULL,
+`name` VARCHAR(15) DEFAULT NULL,
+`address` VARCHAR(20) DEFAULT NULL,
+`Continent` VARCHAR(20) DEFAULT NULL);
+```
+**Step2**, run csvPython.py inside pythonGenerate directory. Install mysql package and import mysql.connector. Remember to change host, user, and password to your local PC setup. In such way, we can generat a 10million rows of data insid a csv file tha can be exported through MYSQL command ``` SELECT * FROM project ````.
+<br />
+**Step3**, create java maven project called csv-kafka. In this folder, the csv data generated above in step 2 is stored in the data directory which allows us the read from. Here, we need buiild indepedencies inside the pom.xml file and run maven-lifecyle-clean that automatically install the dependencies to the project.
+<br />
+**Step4**, create a kafka topic using by firstly startine zookeepar and kafka, and build a topic according to your need. Here, I created a topic called source.
+<br />
+**Step5**, Run ProducerJavaModel.java inside csv-kafka/src/main an store the csv data to kafka topic called source.
+<br />
+**Step6**, create kafka topic where we need to store the sorted data into.
+<br />
+**Step7**, run go-kafka project. In this go-project, we firstly need to install "github.com/Shopify/sarama"
+	cluster "github.com/bsm/sarama-cluster" by running command of go install "github.com/Shopify/sarama". In such way, we can connect our local go project local kafka. After this, you can simply run go-kafka/main/main.go. Remember that the topic name inside the consume group needs to match the topic we store the data in, here it's "source". You can also create different topic name inside kafka and switch the name of topic insid the producer group according to the topic you want the data to produce to. 
+<br />
+**Conlusion**: The sorted data will be correctly produced in topics called id numerically, name alphabetically, and continent alphabetically
+
+## Project overview
+##### Divided the whole pipline into four parts.
 
 ### 1. Create MYSQL table called `project`
 
@@ -28,7 +56,7 @@ SpaceComplexity: O(n)
 Runtime: O(n)
 SpaceComplexity: O(n)
 
-#### 4. Golang project that reads the data inside the source topic in kafka and sort accodingly to :
+### 4. Golang project that reads the data inside the source topic in kafka and sort accodingly to :
 
 * id(numerically) 
 * name(alphabetically)
